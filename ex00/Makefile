@@ -19,6 +19,15 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	@$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 	@echo "$(BLUE)Compilation complete. Executable $(NAME) created.$(RESET)"
+	@echo ""
+	@echo "$(GREEN)"
+	@echo "██████╗ ████████╗  ██████╗ "
+	@echo "██╔══██╗╚══██╔══╝ ██╔════╝ "
+	@echo "██████╔╝   ██║    ██║     "
+	@echo "██╔══██╗   ██║    ██║     "
+	@echo "██████╔╝   ██║    ╚██████╗"
+	@echo "╚═════╝    ╚═╝     ╚═════╝"
+	@echo "$(RESET)"	
 
 %.o: %.cpp BitcoinExchange.hpp
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
