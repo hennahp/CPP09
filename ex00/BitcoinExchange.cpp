@@ -214,12 +214,12 @@ void BitcoinExchange::processInputFile(const std::string &filename) const
         }
         if(value < 0)
         {
-            std::cerr << "Error: Not a positive number." << std::endl;
+            std::cerr << "Error: not a positive number." << std::endl;
             continue;
         }
         if(value > 1000)
         {
-            std::cerr << "Error: Too large a number." << std::endl;
+            std::cerr << "Error: too large a number." << std::endl;
             continue;
         }
         if(!isValidDate(date))
