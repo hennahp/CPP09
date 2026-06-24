@@ -51,15 +51,10 @@ bool RPN::applyOperator(const std::string &op)
     if(_stack.size() < 2)
         return false;
 
-    std::cout << "[OP] " << op << std::endl;
-    std::cout << "  stack before: " << _stack.size() << std::endl;
-
     int b = _stack.top();
     _stack.pop();
     int a = _stack.top();
     _stack.pop();
-
-    std::cout << "  a=" << a << " b=" << b << std::endl;
 
     if(op == "+")
         _stack.push(a + b);
@@ -73,7 +68,6 @@ bool RPN::applyOperator(const std::string &op)
             return false;
         _stack.push(a / b);
     }
-    std::cout << "  stack after: " << _stack.size() << std::endl;
     return true;
 }
 
@@ -84,36 +78,21 @@ bool RPN::evaluate(const std::string &expression)
 
     while(iss >> token)
     {
-        std::cout << "[TOKEN] " << token << std::endl;
         if(isNumber(token))
         {
-            std::cout << "[NUMBER] " << token << std::endl;
             int _value = std::atoi(token.c_str());
             _stack.push(_value);
         }
         else if(isOperator(token))
         {
-            std::cout << "[OPERATOR] " << token << std::endl;
-            std::cout << "  stack size before op: " << _stack.size() << std::endl;
             if(!applyOperator(token))
-            {
-                std::cerr << "Error: Invalid operation or insufficient operands." << std::endl;
                 return false;
-            }
-            std::cout << "  stack size after op: " << _stack.size() << std::endl;
         }
         else
-        {
-            std::cout << "[INVALID] " << token << std::endl;
             return false;
-        }
     }
-    std::cout << "[FINAL STACK SIZE] " << _stack.size() << std::endl;
     if(_stack.size() != 1)
-    {
-        std::cout << "ERROR: invalid final state" << std::endl;
         return false;
-    }
     return true;
 }
 

@@ -34,6 +34,7 @@ $(NAME): $(OBJS)
 %.o: %.cpp RPN.hpp
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 	@echo "$(GREEN)Compiled $<$(RESET)"
+	
 clean:
 	@$(RM) $(OBJS)
 	@echo "$(YELLOW)Cleaned up object files.$(RESET)"
