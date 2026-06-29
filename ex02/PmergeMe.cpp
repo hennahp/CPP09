@@ -82,12 +82,12 @@ void PmergeMe::process()
     gettimeofday(&start, NULL);
     sortVector();
     gettimeofday(&end, NULL);
-    long vectTime = (end.tv_sec - start.tv_sec) * 10000000L + (end.tv_usec - start.tv_usec);
+    long vectTime = (end.tv_sec - start.tv_sec) * 1000000L + (end.tv_usec - start.tv_usec);
 
     gettimeofday(&start, NULL);
     sortDeque();
     gettimeofday(&end, NULL);
-    long deqTime = (end.tv_sec - start.tv_sec) * 10000000L + (end.tv_usec - start.tv_usec);
+    long deqTime = (end.tv_sec - start.tv_sec) * 1000000L + (end.tv_usec - start.tv_usec);
 
     displayAfter();
 
@@ -100,3 +100,137 @@ void PmergeMe::process()
               << deqTime << " us" << std::endl;
 }
 
+void PmergeMe::createPairs(std::vector<int> &input, std::vector<std::pair<int, int> > &pairs, 
+                        bool &hasLeftover, int &leftover)
+{
+    hasLeftover = false;
+    leftover = -1;
+    
+    size_t i = 0;
+    while(i + 1 < input.size())
+    {
+        int first = input[i];
+        int second = input[i + 1];
+        if(first > second)
+            std::swap(first, second);
+        
+        pairs.push_back(std::make_pair(first, second));
+        i += 2;
+    }
+
+    if(i < input.size())
+    {
+        hasLeftover = true;
+        leftover = input[i];
+    }
+}
+
+void PmergeMe::sortPairs(std::vector<std::pair<int, int> > &pairs)
+{
+    for(size_t i = 0; i < pairs.size(); i++)
+    {
+        for(size_t j = i + 1; j < pairs.size(); j++)
+        {
+            if(pairs[i].second > pairs[j].second)
+                std::swap(pairs[i], pairs[j]);
+        }
+    }
+}
+
+void PmergeMe::buildChains(const std::vector<std::pair<int, int> > &pairs,
+                        std::vector<int> &mainChain, std::vector<int> &pend)
+{
+    for(size_t i = 0; i < pairs.size(); i++)
+    {
+        mainChain.push_back(pairs[i].second);
+        pend.push_back(pairs[i].first);
+    }
+}
+
+void PmergeMe::binaryInsertVector(std::vector<int> &chain, int value)
+{
+    size_t left = 0;
+    size_t right = chain.size();
+
+    while(left < right)
+    {
+        size_t mid = left + (right - left) / 2;
+
+        if(chain[mid] < value)
+            left = mid + 1;
+        else
+            right = mid;
+    }
+
+    chain.insert(chain.begin() + left, value);
+}
+
+std::vector<size_t> PmergeMe::jacobsthalOrder(size_t n)
+{
+    std::vector<size_t>order;
+    std::vector<bool>used(n, false);
+
+    if(n == 0)
+        return order;
+
+    std::vector<size_t> jacobsthal;
+    jacobsthal.push_back(1);
+    jacobsthal.push_back(3);
+
+    while(jacobsthal.back() < n)
+    {
+        size_t s = jacobsthal.size();
+        size_t next = jacobsthal[s - 1] + 2 * jacobsthal[s - 2];
+        jacobsthal.push_back(next);
+    }
+
+    size_t prev = 0;
+    for(size_t i = 0; i < jacobsthal.size(); i++)
+    {
+        size_t end = std::min(jacobsthal[i], n);
+        for(size_t j = end; j > prev; j--)
+        {
+            if(!used[j - 1])
+            {
+                order.push_back(j - 1);
+                used[j - 1] = true;
+            }
+        }
+        prev = end;
+    }
+    for(size_t i = 0; i < n; i++)
+    {
+        if(!used[i])
+            order.push_back(i);
+    }
+    return order;
+}
+
+void PmergeMe::sortVector()
+{
+    std::vector<std::pair<int, int> > pairs;
+    std::vector<int> mainChain;
+    std::vector<int> pend;
+
+    bool hasLeftover = false;
+    int leftover = -1;
+
+    createPairs(_vec, pairs, hasLeftover, leftover);
+    sortPairs(pairs);
+    buildChains(pairs, mainChain, pend);
+
+    std::vector<size_t> order = jacobsthalOrder(pend.size());
+
+    for(size_t i = 0; i < order.size(); i++)
+    {
+         binaryInsertVector(mainChain, pend[order[i]]);
+    }  
+    if(hasLeftover)
+        binaryInsertVector(mainChain, leftover);
+
+    _vec = mainChain;
+}
+
+void PmergeMe::sortDeque()
+{
+}
