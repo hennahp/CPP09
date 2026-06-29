@@ -23,7 +23,23 @@ void PmergeMe::displayBefore()
 {
     std::cout << "Before: ";
     for(size_t i = 0; i < _vec.size(); i++)
-        std::cout << _vec[i] << " ";
+    {
+        if(i != 0)
+            std::cout << " ";
+        std::cout << _vec[i];
+    }    
+    std::cout << std::endl;
+}
+
+void PmergeMe::displayBeforeDeque()
+{
+    std::cout << "Before: ";
+    for(size_t i = 0; i < _deq.size(); i++)
+    {
+        if(i != 0)
+            std::cout << " ";
+        std::cout << _deq[i];
+    }    
     std::cout << std::endl;
 }
 
@@ -31,7 +47,23 @@ void PmergeMe::displayAfter()
 {
     std::cout << "After: ";
     for(size_t i = 0; i < _vec.size(); i++)
-        std::cout << _vec[i] << " ";
+    {
+        if(i != 0)
+            std::cout << " ";
+        std::cout << _vec[i];
+    }
+    std::cout << std::endl;
+}
+
+void PmergeMe::displayAfterDeque()
+{
+    std::cout << "After: ";
+    for(size_t i = 0; i < _deq.size(); i++)
+    {
+        if(i != 0)
+            std::cout << " ";
+        std::cout << _deq[i];
+    }
     std::cout << std::endl;
 }
 
@@ -75,7 +107,8 @@ void PmergeMe::parseInput(char **av)
 
 void PmergeMe::process()
 {
-    displayBefore();
+    // displayBefore();
+    displayBeforeDeque();
 
     struct timeval start, end;
 
@@ -89,7 +122,8 @@ void PmergeMe::process()
     gettimeofday(&end, NULL);
     long deqTime = (end.tv_sec - start.tv_sec) * 1000000L + (end.tv_usec - start.tv_usec);
 
-    displayAfter();
+    // displayAfter();
+    displayAfterDeque();
 
     std::cout << "Time to process a range of " << _vec.size()
               << " elements with std::vector : "
@@ -126,6 +160,18 @@ void PmergeMe::createPairs(std::vector<int> &input, std::vector<std::pair<int, i
 }
 
 void PmergeMe::sortPairs(std::vector<std::pair<int, int> > &pairs)
+{
+    for(size_t i = 0; i < pairs.size(); i++)
+    {
+        for(size_t j = i + 1; j < pairs.size(); j++)
+        {
+            if(pairs[i].second > pairs[j].second)
+                std::swap(pairs[i], pairs[j]);
+        }
+    }
+}
+
+void PmergeMe::sortDequePairs(std::deque<std::pair<int, int> > &pairs)
 {
     for(size_t i = 0; i < pairs.size(); i++)
     {
@@ -231,6 +277,75 @@ void PmergeMe::sortVector()
     _vec = mainChain;
 }
 
+void PmergeMe::createDequePairs(std::deque<int> &input, std::deque<std::pair<int, int> > &pairs, 
+                        bool &hasLeftover, int &leftover)
+{
+    hasLeftover = false;
+    leftover = -1;
+    
+    size_t i = 0;
+    while(i + 1 < input.size())
+    {
+        int first = input[i];
+        int second = input[i + 1];
+        if(first > second)
+            std::swap(first, second);
+        
+        pairs.push_back(std::make_pair(first, second));
+        i += 2;
+    }
+
+    if(i < input.size())
+    {
+        hasLeftover = true;
+        leftover = input[i];
+    }
+}
+
+void PmergeMe::binaryInsertDeque(std::deque<int> &chain, int value)
+{
+    size_t left = 0;
+    size_t right = chain.size();
+
+    while(left < right)
+    {
+        size_t mid = left + (right - left) / 2;
+
+        if(chain[mid] < value)
+            left = mid + 1;
+        else
+            right = mid;
+    }
+
+    chain.insert(chain.begin() + left, value);
+}
+
 void PmergeMe::sortDeque()
 {
+    std::deque<std::pair<int, int> > pairs;
+    std::deque<int> mainChain;
+    std::deque<int> pend;
+
+    bool hasLeftover = false;
+    int leftover = -1;
+
+    createDequePairs(_deq, pairs, hasLeftover, leftover);
+    sortDequePairs(pairs);
+    
+    for(size_t i = 0; i < pairs.size(); i++)
+    {
+        mainChain.push_back(pairs[i].second);
+        pend.push_back(pairs[i].first);
+    }
+
+    std::vector<size_t> order = jacobsthalOrder(pend.size());
+
+    for(size_t i = 0; i < order.size(); i++)
+    {
+         binaryInsertDeque(mainChain, pend[order[i]]);
+    }  
+    if(hasLeftover)
+        binaryInsertDeque(mainChain, leftover);
+
+    _deq = mainChain;
 }

@@ -15,13 +15,15 @@ class PmergeMe{
 
         void createPairs(std::vector<int> &input, std::vector<std::pair<int, int> > &pairs, 
                         bool &hasLeftover, int &leftover);
+        void createDequePairs(std::deque<int> &input, std::deque<std::pair<int, int> > &pairs, 
+                        bool &hasLeftover, int &leftover);
+
         void buildChains(const std::vector<std::pair<int, int> > &pairs,
                         std::vector<int> &mainChain, std::vector<int> &pend);
+        
 
         void sortPairs(std::vector<std::pair<int, int> > &pairs);
-
-        void fordJohnsonVector();
-        void fordJohnsonDeque();
+        void sortDequePairs(std::deque<std::pair<int, int> > &pairs);
 
         void binaryInsertVector(std::vector<int> &chain, int value);
         void binaryInsertDeque(std::deque<int> &chain, int value);
@@ -40,6 +42,8 @@ class PmergeMe{
 
         void displayBefore();
         void displayAfter();
+        void displayAfterDeque();
+        void displayBeforeDeque();
 
         void process();
 };
