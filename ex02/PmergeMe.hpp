@@ -18,15 +18,29 @@ class PmergeMe{
         void createDequePairs(std::deque<int> &input, std::deque<std::pair<int, int> > &pairs, 
                         bool &hasLeftover, int &leftover);
 
+        std::vector<int> fordJohnsonVector(std::vector<int> &input);
+        std::deque<int> fordJohnsonDeque(std::deque<int> &input);
+
+        void extractLargerElements(const std::vector<std::pair<int, int> > &pairs,
+                        std::vector<int> &larger);
+        void extractLargerElementsDeque(const std::deque<std::pair<int, int> > &pairs,
+                        std::deque<int> &larger);   
+
+        void reorderPairs(std::vector<std::pair<int, int> > &pairs,
+                        const std::vector<int> &sortedLarger);
+        void reorderPairsDeque(std::deque<std::pair<int, int> > &pairs,
+                        const std::deque<int> &sortedLarger);
+
         void buildChains(const std::vector<std::pair<int, int> > &pairs,
                         std::vector<int> &mainChain, std::vector<int> &pend);
-        
-
-        void sortPairs(std::vector<std::pair<int, int> > &pairs);
-        void sortDequePairs(std::deque<std::pair<int, int> > &pairs);
+        void buildChainsDeque(const std::deque<std::pair<int, int> > &pairs,
+                        std::deque<int> &mainChain, std::deque<int> &pend);
 
         void binaryInsertVector(std::vector<int> &chain, int value);
+        size_t binaryInsertBoundedVector(std::vector<int> &chain, int value, size_t right);
+        
         void binaryInsertDeque(std::deque<int> &chain, int value);
+        size_t binaryInsertBoundedDeque(std::deque<int> &chain, int value, size_t right);
 
         std::vector<size_t> jacobsthalOrder(size_t n);
     public:
