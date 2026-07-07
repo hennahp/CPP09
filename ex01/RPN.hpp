@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <stack>
+#include <list>
 #include <string>
 #include <sstream>
 #include <cstdlib>
@@ -10,7 +11,7 @@
 class RPN
 {
     private:
-        std::stack<int> _stack;
+        std::stack<int, std::list<int> >_stack;
 
         bool applyOperator(const std::string &op);
         bool isOperator(const std::string &token) const;

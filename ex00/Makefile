@@ -21,13 +21,12 @@ $(NAME): $(OBJS)
 	@echo "$(BLUE)Compilation complete. Executable $(NAME) created.$(RESET)"
 	@echo ""
 	@echo "$(GREEN)"
-	@echo "██████╗ ████████╗  ██████╗ "
-	@echo "██╔══██╗╚══██╔══╝ ██╔════╝ "
-	@echo "██████╔╝   ██║    ██║     "
-	@echo "██╔══██╗   ██║    ██║     "
-	@echo "██████╔╝   ██║    ╚██████╗"
-	@echo "╚═════╝    ╚═╝     ╚═════╝"
-	@echo "$(RESET)"	
+	@echo "======================================="
+	@echo "             BTC"
+	@echo "======================================="
+	@echo "$(RESET)"
+	@echo "                         Bitcoin Exchange Project"
+	@echo "$(RESET)"
 
 %.o: %.cpp BitcoinExchange.hpp
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
