@@ -7,6 +7,9 @@
 #include <string>
 #include <sys/time.h>
 #include <utility>
+#include <cstdlib>
+#include <cerrno>
+#include <climits>
 
 class PmergeMe{
     private:
