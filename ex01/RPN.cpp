@@ -73,6 +73,9 @@ bool RPN::applyOperator(const std::string &op)
 
 bool RPN::evaluate(const std::string &expression)
 {
+    while(!_stack.empty())
+        _stack.pop();
+    
     std::istringstream iss(expression);
     std::string token;
 
