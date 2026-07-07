@@ -71,9 +71,6 @@ void BitcoinExchange::loadDatabase(const std::string &filename)
             continue;
         }
 
-        // if(!date.empty() && date[date.size() - 1] == ' ')
-        //     date.erase(date.size() - 1);
-
         while(!date.empty() && (date[date.size() - 1] == ' ' || date[date.size() - 1] == '\t'))
             date.erase(date.size() - 1);
 
@@ -97,18 +94,15 @@ bool BitcoinExchange::findRate(const std::string &date, double &rate) const
 
 	std::map<std::string, double>::const_iterator it = _database.lower_bound(date);
 
-	// exact match
 	if (it != _database.end() && it->first == date)
 	{
 		rate = it->second;
 		return true;
 	}
 
-	// too early (no smaller date exists)
 	if (it == _database.begin())
 		return false;
 
-	// fallback to previous date
 	if (it == _database.end())
 		--it;
 	else
@@ -173,7 +167,6 @@ void BitcoinExchange::processInputFile(const std::string &filename) const
 
     std::string line;
     
-    // Skip the first line (header)
     if(!std::getline(file, line))
     {
         std::cerr << "Error: Could not read from input file." << std::endl;
@@ -188,7 +181,6 @@ void BitcoinExchange::processInputFile(const std::string &filename) const
         std::string date;
         std::string valueStr;
 
-        //split the line into date and value with '|' as the delimiter
         size_t pos = line.find('|');
         if(pos == std::string::npos)
         {
@@ -198,11 +190,9 @@ void BitcoinExchange::processInputFile(const std::string &filename) const
         date = line.substr(0, pos);
         valueStr = line.substr(pos + 1);
 
-        //trim whitespace from date and valueStr
         trim(date);
         trim(valueStr);
 
-        //validate date and value
         std::stringstream ss(valueStr);
         double value;
         char c;
